@@ -1,0 +1,130 @@
+.home {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  width: 100%;
+}
+
+.home .lotus {
+  width: min(82vw, 320px);
+}
+
+/* Begin: a soft cream pill whose glow breathes with the lotus (4s in, 6s out). */
+.btn-begin {
+  --begin-glow: rgba(236, 170, 188, 0.55);
+  min-height: 56px;
+  min-width: 210px;
+  padding: 14px 34px;
+  border-radius: 999px;
+  border: 1px solid var(--blush-deep);
+  background: #fffaf6;
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  box-shadow: 0 0 0 0 var(--begin-glow);
+  animation: begin-breathe 10s ease-in-out infinite;
+  transition: transform 300ms ease;
+}
+
+.btn-begin:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-begin {
+    --begin-glow: rgba(232, 160, 190, 0.35);
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--blush);
+  }
+}
+
+@keyframes begin-breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 6px 0 var(--begin-glow);
+  }
+  40% {
+    box-shadow: 0 0 26px 4px var(--begin-glow);
+  }
+}
+
+/* Small, calm icon links. */
+.home-links {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
+.home-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 72px;
+  min-height: var(--tap);
+  padding: 6px 4px;
+  color: var(--text-soft);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: color 300ms ease;
+}
+
+.home-link:hover {
+  color: var(--text);
+}
+
+/* Faint stars on a dark night. */
+.home-stars {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-daypart='night'] .home-stars {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    width: 1px;
+    height: 1px;
+    border-radius: 50%;
+    background: transparent;
+    pointer-events: none;
+    box-shadow:
+      -150px 60px 0 0.4px rgba(255, 255, 255, 0.55),
+      -95px 128px 0 0 rgba(255, 255, 255, 0.4),
+      -40px 34px 0 0.5px rgba(255, 255, 255, 0.6),
+      20px 96px 0 0 rgba(255, 255, 255, 0.35),
+      70px 52px 0 0.4px rgba(255, 255, 255, 0.5),
+      130px 140px 0 0 rgba(255, 255, 255, 0.4),
+      160px 70px 0 0.5px rgba(255, 255, 255, 0.55),
+      -125px 196px 0 0 rgba(255, 255, 255, 0.3),
+      105px 210px 0 0 rgba(255, 255, 255, 0.3),
+      -10px 176px 0 0.3px rgba(255, 255, 255, 0.4);
+    animation: stars-twinkle 8s ease-in-out infinite;
+  }
+}
+
+@keyframes stars-twinkle {
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.home-theme {
+  display: flex;
+  justify-content: center;
+  padding: 10px 0 2px;
+}

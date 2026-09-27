@@ -1,0 +1,45 @@
+.feeling-chips {
+  width: 100%;
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.feeling-chip {
+  min-height: var(--tap);
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition:
+    background-color 400ms ease,
+    border-color 400ms ease,
+    color 400ms ease;
+}
+
+.feeling-chip[aria-pressed='true'] {
+  background: var(--blush);
+  border-color: var(--blush-deep);
+  color: var(--text);
+}
+
+@media (prefers-color-scheme: dark) {
+  .feeling-chip[aria-pressed='true'] {
+    color: var(--bg);
+  }
+}
+
+.feeling-edit {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 12px;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  text-decoration: none;
+}

@@ -1,0 +1,24 @@
+.rain-streaks {
+  position: absolute;
+  left: 50%;
+  top: -12%;
+  width: min(92vw, 380px);
+  height: 124%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  color: #8c7a93; /* streak colour, read by the canvas */
+  /* Soft edges so the rain dissolves instead of ending at a box. */
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 55%, transparent 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+  .rain-streaks {
+    color: #cdbfe0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rain-streaks {
+    display: none;
+  }
+}

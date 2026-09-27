@@ -1,0 +1,202 @@
+.pond {
+  --water-a: #e4ede8;
+  --water-b: #cddbd6;
+  --ring: rgba(120, 150, 140, 0.35);
+  --pad: #9fb89a;
+  --pad-edge: rgba(80, 110, 80, 0.35);
+  --petal-edge: rgba(190, 110, 135, 0.4);
+  --tint-base: #f5cf9f;
+  --tint-morning: #f9d2b8;
+  --tint-morning-tip: #fff6ef;
+  --tint-afternoon: #f3bfcb;
+  --tint-afternoon-tip: #fffaf8;
+  --tint-evening: #d8c3ec;
+  --tint-evening-tip: #faf5ff;
+  --tint-night: #cddff0;
+  --tint-night-tip: #f7fbff;
+  --tint-night-base: #e8e0c8;
+
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  touch-action: pan-y; /* horizontal swipes change month */
+}
+
+@media (prefers-color-scheme: dark) {
+  .pond {
+    --water-a: #2b2f52;
+    --water-b: #1f2240;
+    --ring: rgba(170, 180, 230, 0.2);
+    --pad: #5d7560;
+    --pad-edge: rgba(200, 230, 200, 0.2);
+    --petal-edge: rgba(255, 220, 230, 0.35);
+  }
+
+  .pond-mini {
+    filter: drop-shadow(0 0 3px rgba(240, 190, 210, 0.45));
+  }
+}
+
+.pond-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.pond-water-a {
+  stop-color: var(--water-a);
+}
+.pond-water-b {
+  stop-color: var(--water-b);
+}
+
+.pond-rings ellipse {
+  fill: none;
+  stroke: var(--ring);
+  stroke-width: 0.8;
+}
+
+.pond-pad {
+  fill: var(--pad);
+  stroke: var(--pad-edge);
+  stroke-width: 0.5;
+}
+
+.pond-petal {
+  stroke: var(--petal-edge);
+  stroke-width: 0.4;
+}
+
+.pond-tint-base {
+  stop-color: var(--tint-base);
+}
+.pond-tint-base--night {
+  stop-color: var(--tint-night-base);
+}
+.pond-tint-mid--morning {
+  stop-color: var(--tint-morning);
+}
+.pond-tint-tip--morning {
+  stop-color: var(--tint-morning-tip);
+}
+.pond-tint-mid--afternoon {
+  stop-color: var(--tint-afternoon);
+}
+.pond-tint-tip--afternoon {
+  stop-color: var(--tint-afternoon-tip);
+}
+.pond-tint-mid--evening {
+  stop-color: var(--tint-evening);
+}
+.pond-tint-tip--evening {
+  stop-color: var(--tint-evening-tip);
+}
+.pond-tint-mid--night {
+  stop-color: var(--tint-night);
+}
+.pond-tint-tip--night {
+  stop-color: var(--tint-night-tip);
+}
+
+.pond-lotus {
+  cursor: pointer;
+  outline: none;
+}
+
+.pond-hit {
+  fill: transparent;
+}
+
+.pond-lotus:focus-visible .pond-hit {
+  stroke: var(--focus);
+  stroke-width: 1.5;
+}
+
+/* Hover or focus: petals glow warm gold-and-rose, and the lotus lifts a touch. */
+.pond {
+  --glow-base: #f0b25e;
+  --glow-mid: #ffdcae;
+  --glow-tip: #f08fb0;
+  --glow-halo: rgba(245, 180, 110, 0.7);
+}
+
+.pond-glow-base {
+  stop-color: var(--glow-base);
+}
+.pond-glow-mid {
+  stop-color: var(--glow-mid);
+}
+.pond-glow-tip {
+  stop-color: var(--glow-tip);
+}
+
+.pond-petals-glow {
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.pond-mini {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition:
+    transform 400ms ease,
+    filter 400ms ease;
+}
+
+.pond-lotus:hover .pond-petals-glow,
+.pond-lotus:focus-visible .pond-petals-glow {
+  opacity: 1;
+}
+
+.pond-lotus:hover .pond-mini,
+.pond-lotus:focus-visible .pond-mini {
+  transform: translateY(-1.5px) scale(1.08);
+  filter: drop-shadow(0 0 3px var(--glow-halo));
+}
+
+/* A few pixels of slow drift, each lotus on its own loop. */
+.pond-drift {
+  animation: pond-drift 14s ease-in-out infinite;
+}
+
+@keyframes pond-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(var(--dx), var(--dy));
+  }
+}
+
+/* The newest lotus, arriving from After the rain. */
+.pond-arrive {
+  animation: pond-arrive 3.2s ease-out 0.5s both;
+}
+
+@keyframes pond-arrive {
+  from {
+    opacity: 0;
+    transform: translate(-8px, 40px) scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.pond-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 0 22%;
+  text-align: center;
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  line-height: 1.4;
+  color: var(--text-soft);
+  pointer-events: none;
+}

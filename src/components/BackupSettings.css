@@ -1,0 +1,30 @@
+.backup {
+  padding: 20px 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.backup h2 {
+  font-family: var(--sans);
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.backup-intro {
+  color: var(--text-soft);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.backup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.backup-message {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: var(--sage-deep);
+}

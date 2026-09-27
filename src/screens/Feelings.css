@@ -1,0 +1,71 @@
+.feeling-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feeling-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.feeling-input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--tap);
+  padding: 10px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.feeling-input:focus {
+  outline: none;
+  border-color: var(--sage);
+}
+
+.feeling-tag {
+  width: 2.8em;
+  flex: none;
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--sage-deep);
+}
+
+.feeling-remove {
+  width: var(--tap);
+  height: var(--tap);
+  flex: none;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--text-soft);
+  cursor: pointer;
+}
+
+.feelings-message {
+  color: var(--text-soft);
+  margin-bottom: 12px;
+}
+
+.feeling-add-form {
+  display: flex;
+  gap: 8px;
+}
+
+.feelings-hint {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: var(--text-soft);
+}
+
+.feelings-reset {
+  align-self: center;
+  margin-top: 32px;
+}

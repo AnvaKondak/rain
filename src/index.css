@@ -1,0 +1,285 @@
+:root {
+  /* Palette: warm off-white, blush pinks, muted sage, deep plum. */
+  --bg: #fbf6f1;
+  --surface: #f5ebe6;
+  --text: #3e2640;
+  --text-soft: #6f5670;
+  --blush: #f2c9d1;
+  --blush-deep: #e3a3b3;
+  --sage: #8fa88a;
+  --sage-deep: #6a8566;
+  --border: #e8d8d6;
+  --focus: #8fa88a;
+
+  --serif: 'Fraunces Variable', 'Iowan Old Style', Palatino, Georgia, serif;
+  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --fade: 500ms;
+  --tap: 48px;
+
+  font: 18px/1.5 var(--sans);
+  /* Fraunces' soft axis (rounded, gentle letterforms); other fonts ignore it. */
+  font-variation-settings: 'SOFT' 100;
+  color-scheme: light;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Deep indigo night, softly glowing lotus. */
+    --bg: #1b1a33;
+    --surface: #25243f;
+    --text: #f1e6ee;
+    --text-soft: #c2b3c6;
+    --blush: #e8b4c2;
+    --blush-deep: #d48ea3;
+    --sage: #a3bb9e;
+    --sage-deep: #b8ceb3;
+    --border: #38365a;
+    --focus: #a3bb9e;
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  background: linear-gradient(180deg, var(--sky, var(--bg)) 0%, var(--bg) 70%) no-repeat, var(--bg);
+}
+
+/* A sky that follows the time of day (data-daypart is set in App). */
+:root[data-daypart='morning'] {
+  --sky: #fce3d3;
+}
+:root[data-daypart='afternoon'] {
+  --sky: #fae0e5;
+}
+:root[data-daypart='evening'] {
+  --sky: #ebdff3;
+}
+:root[data-daypart='night'] {
+  --sky: #dfe3f2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-daypart='morning'] {
+    --sky: #3a2d4a;
+  }
+  :root[data-daypart='afternoon'] {
+    --sky: #332b52;
+  }
+  :root[data-daypart='evening'] {
+    --sky: #34264f;
+  }
+  :root[data-daypart='night'] {
+    --sky: #11122a;
+  }
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--serif);
+  font-weight: 380;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+/* Layout: a single centered, mobile-width column. */
+.app {
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: max(16px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+}
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  animation: fade-in var(--fade) ease-out both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Small print at the bottom of every screen outside the practice. */
+.app-footer {
+  padding-top: 20px;
+  text-align: center;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--text-soft);
+  opacity: 0.75;
+}
+
+.app-footer a {
+  display: inline-block;
+  padding: 6px 2px; /* a little more room to tap small print */
+  text-underline-offset: 2px;
+}
+
+/* Buttons */
+.btn {
+  min-height: var(--tap);
+  padding: 12px 28px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: none;
+  cursor: pointer;
+  transition:
+    background-color 300ms ease,
+    opacity 300ms ease;
+}
+
+.btn-primary {
+  background: var(--sage-deep);
+  color: #fff;
+  font-size: 1.1rem;
+  min-width: 200px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-primary {
+    color: var(--bg);
+  }
+}
+
+.btn-primary:active {
+  opacity: 0.85;
+}
+
+.btn-quiet {
+  color: var(--text-soft);
+  font-size: 0.95rem;
+  padding: 12px 16px;
+}
+
+.link-quiet {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 12px;
+  color: var(--text-soft);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+button.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn-small {
+  min-width: 0;
+  padding: 10px 20px;
+  font-size: 1rem;
+}
+
+.btn-outline {
+  align-self: flex-start;
+  border-color: var(--border);
+  color: var(--text);
+  padding: 10px 20px;
+}
+
+.link-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Secondary screens (History, Settings, Feelings) */
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+.page > h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.page-intro {
+  color: var(--text-soft);
+  margin-bottom: 24px;
+}
+
+.dialog-text {
+  color: var(--text-soft);
+  margin: -8px 0 20px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Simple top bar for secondary screens */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 -12px 16px;
+}
+
+.topbar h1 {
+  font-size: 1.6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,26 @@
+.step-dots {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  min-height: var(--tap);
+}
+
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--blush-deep);
+  transition:
+    background-color 600ms ease,
+    transform 600ms ease;
+}
+
+.step-dot.is-done {
+  background: var(--blush);
+}
+
+.step-dot.is-current {
+  background: var(--blush-deep);
+  transform: scale(1.3);
+}

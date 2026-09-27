@@ -1,0 +1,53 @@
+.step-more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.step-more-toggle {
+  min-height: var(--tap);
+  padding: 0 14px;
+  border: none;
+  background: none;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.step-more-panel {
+  max-width: 34ch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  animation: fade-in var(--fade) ease-out both;
+}
+
+
+.step-quote {
+  margin: 0;
+}
+
+.step-quote blockquote {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.step-quote figcaption {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+.step-source {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  font-size: 0.85rem;
+  color: var(--sage-deep);
+  text-decoration: none;
+}

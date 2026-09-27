@@ -1,0 +1,88 @@
+.history-empty {
+  color: var(--text-soft);
+  margin-top: 24px;
+  text-align: center;
+}
+
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--border);
+}
+
+.history-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'when icons'
+    'feelings icons';
+  align-items: center;
+  column-gap: 12px;
+  min-height: 64px;
+  padding: 12px 4px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.history-when {
+  grid-area: when;
+}
+
+.history-feelings {
+  grid-area: feelings;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+}
+
+.history-feelings:empty {
+  display: none;
+}
+
+.history-icons {
+  grid-area: icons;
+  display: flex;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.pond-topbar {
+  justify-content: space-between;
+}
+
+.page > h1.pond-week {
+  font-size: 1.5rem;
+  margin-bottom: 4px;
+}
+
+.pond-months {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 -12px 8px;
+}
+
+.pond-month {
+  font-family: var(--sans);
+  font-size: 1rem;
+  color: var(--text-soft);
+}
+
+.pond-arrow {
+  width: var(--tap);
+  height: var(--tap);
+  border: none;
+  background: none;
+  color: var(--text-soft);
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.pond-arrow:disabled {
+  visibility: hidden;
+}
+
+.pond-swipe {
+  animation: fade-in var(--fade) ease-out both;
+}

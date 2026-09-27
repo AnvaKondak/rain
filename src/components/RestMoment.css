@@ -1,0 +1,42 @@
+.rest {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rest-actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.rest-done {
+  min-width: 120px;
+  font-size: 1rem;
+}
+
+/* Smaller and softer than Done, so the stillness stays intact. */
+.rest-learn {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 12px;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+  opacity: 0.8;
+  text-decoration: none;
+}
+
+/* Hidden, not just transparent: nothing to tap or focus until it arrives. */
+.rest-actions {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.rest-actions.is-shown {
+  visibility: visible;
+  animation: fade-in 2.4s ease-out both;
+}

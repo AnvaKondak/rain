@@ -1,0 +1,112 @@
+.ambient {
+  padding: 16px 4px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ambient-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: var(--tap);
+}
+
+.ambient h2 {
+  font-family: var(--sans);
+  font-size: 1rem;
+}
+
+.ambient-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+  transition: opacity 400ms ease;
+}
+
+.ambient-options.is-off {
+  opacity: 0.45;
+}
+
+.ambient-sounds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ambient-sound {
+  min-height: var(--tap);
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--text-soft);
+  cursor: pointer;
+  transition:
+    background-color 400ms ease,
+    border-color 400ms ease;
+}
+
+.ambient-sound[aria-checked='true'] {
+  background: var(--surface);
+  border-color: var(--sage);
+  color: var(--text);
+}
+
+.ambient-volume {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: var(--tap);
+  color: var(--text-soft);
+}
+
+.ambient-volume input {
+  flex: 1;
+  accent-color: var(--sage-deep);
+  height: var(--tap);
+}
+
+.ambient-listen {
+  min-height: var(--tap);
+}
+
+/* On/off switch */
+.switch {
+  position: relative;
+  width: 56px;
+  height: 32px;
+  flex: none;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: var(--border);
+  cursor: pointer;
+  transition: background-color 300ms ease;
+}
+
+/* Keep a 48px touch area around the smaller visual switch. */
+.switch::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+}
+
+.switch[aria-checked='true'] {
+  background: var(--sage-deep);
+}
+
+.switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 300ms ease;
+}
+
+.switch[aria-checked='true'] .switch-thumb {
+  transform: translateX(24px);
+}

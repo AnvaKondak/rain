@@ -1,0 +1,19 @@
+.privacy-section {
+  margin-top: 22px;
+}
+
+.privacy-section h2 {
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+}
+
+.privacy-section p {
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.privacy-updated {
+  margin-top: 28px;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}

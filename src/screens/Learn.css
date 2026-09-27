@@ -1,0 +1,81 @@
+.learn-section {
+  margin-top: 28px;
+}
+
+.learn-section h2 {
+  font-family: var(--sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sage-deep);
+  margin-bottom: 4px;
+}
+
+.learn-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Calm and spacious: no cards, just breathing room between items. */
+.resource {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: var(--tap);
+  padding: 14px 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.resource-title {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  line-height: 1.3;
+}
+
+.resource:hover .resource-title,
+.resource:focus-visible .resource-title {
+  text-decoration: underline;
+  text-decoration-color: var(--blush-deep);
+  text-underline-offset: 4px;
+}
+
+.resource-author {
+  font-size: 0.9rem;
+  color: var(--text-soft);
+}
+
+.resource-note {
+  margin-top: 4px;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+.learn-history {
+  margin-top: 8px;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.learn-original {
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.learn-original div {
+  line-height: 1.45;
+}
+
+.learn-original dt {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+}
+
+.learn-original dd {
+  margin: 0;
+  color: var(--text-soft);
+}

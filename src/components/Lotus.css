@@ -1,0 +1,284 @@
+.lotus {
+  /* A real lotus: a warm golden heart, creamy white body, blush-pink tips
+     that deepen a little on the outer petals. */
+  --petal-base: #f4c98e;
+  --petal-cream: #fff8f3;
+  --petal-bud: #fdecef;
+  --petal-bud-tip: #f4bfcc;
+  --petal-l1: #fce6eb;
+  --petal-l1-tip: #f1b3c4;
+  --petal-l2: #fadfe5;
+  --petal-l2-tip: #eca6ba;
+  --petal-l3: #f8d6de;
+  --petal-l3-tip: #e699b0;
+  --petal-l4: #f5ccd6;
+  --petal-l4-tip: #df8ca7;
+  --petal-edge: rgba(200, 110, 140, 0.32);
+  --vein: rgba(214, 120, 150, 0.32);
+  --vein-light: rgba(255, 255, 255, 0.5);
+  --petal-shadow: rgba(120, 50, 80, 0.14);
+  --pad: #b9c9b4;
+  --glow: rgba(242, 190, 200, 0.55);
+  --glow-warm: rgba(248, 214, 170, 0.35);
+
+  position: relative;
+  width: min(72vw, 280px);
+  aspect-ratio: 5 / 4;
+  display: grid;
+  place-items: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  .lotus {
+    --petal-base: #f2c48a;
+    --petal-edge: rgba(255, 220, 230, 0.35);
+    --vein: rgba(214, 120, 150, 0.35);
+    --petal-shadow: rgba(20, 10, 40, 0.25);
+    --pad: #4a5a52;
+    --glow: rgba(232, 160, 185, 0.4);
+    --glow-warm: rgba(245, 200, 150, 0.25);
+  }
+
+  .lotus-svg {
+    filter: drop-shadow(0 0 10px rgba(240, 180, 200, 0.35));
+  }
+}
+
+.lotus-svg {
+  position: relative;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Breathing: ~4s expanding, ~6s contracting. */
+.lotus-glow {
+  position: absolute;
+  inset: -8% 4%;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side circle at 50% 55%,
+    var(--glow-warm) 0%,
+    var(--glow) 45%,
+    transparent 100%
+  );
+  animation: lotus-breathe 10s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes lotus-breathe {
+  0% {
+    transform: scale(0.82);
+    opacity: 0.55;
+  }
+  40% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.82);
+    opacity: 0.55;
+  }
+}
+
+.lotus-flower {
+  transform-box: view-box;
+  transform-origin: 100px 150px;
+  transition: transform 2.4s ease-out;
+}
+
+.lotus-petal {
+  /* Rotate and scale around the petal's base. */
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: transform 1.2s ease-out;
+}
+
+.lotus-petal-shape {
+  stroke: var(--petal-edge);
+  stroke-width: 0.5;
+  /* A whisper of shadow so layered petals don't flatten into each other. */
+  filter: drop-shadow(0 0.6px 0.9px var(--petal-shadow));
+}
+
+.lotus-vein {
+  fill: none;
+  stroke: var(--vein);
+  stroke-width: 0.45;
+  stroke-linecap: round;
+}
+
+.lotus-vein--mid {
+  stroke: var(--vein-light);
+  stroke-width: 0.6;
+}
+
+.lotus-pad {
+  fill: var(--pad);
+  opacity: 0.5;
+}
+
+.stop-base {
+  stop-color: var(--petal-base);
+}
+.stop-cream {
+  stop-color: var(--petal-cream);
+}
+.stop-mid--bud {
+  stop-color: var(--petal-bud);
+}
+.stop-tip--bud {
+  stop-color: var(--petal-bud-tip);
+}
+.stop-mid--l1 {
+  stop-color: var(--petal-l1);
+}
+.stop-tip--l1 {
+  stop-color: var(--petal-l1-tip);
+}
+.stop-mid--l2 {
+  stop-color: var(--petal-l2);
+}
+.stop-tip--l2 {
+  stop-color: var(--petal-l2-tip);
+}
+.stop-mid--l3 {
+  stop-color: var(--petal-l3);
+}
+.stop-tip--l3 {
+  stop-color: var(--petal-l3-tip);
+}
+.stop-mid--l4 {
+  stop-color: var(--petal-l4);
+}
+.stop-tip--l4 {
+  stop-color: var(--petal-l4-tip);
+}
+
+/* Bloom: slight scale-up and a brighter, slower glow. */
+.lotus--bloom .lotus-flower {
+  transform: scale(1.08);
+  transition-duration: 2s;
+}
+
+/* The final opening is slower than the steps before it. */
+.lotus--bloom .lotus-petal {
+  transition-duration: 2s;
+}
+
+/* Resting: a very slow breath. */
+.lotus--bloom .lotus-glow {
+  inset: -18% -6%;
+  animation-duration: 14s;
+}
+
+/* Slow rings spreading on still water, starting once the bloom settles. */
+.lotus-ripple {
+  fill: none;
+  stroke: var(--pad);
+  stroke-width: 0.6;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lotus-ripple 9s ease-out infinite;
+}
+
+.lotus-ripple:nth-child(1) {
+  animation-delay: 2s;
+}
+.lotus-ripple:nth-child(2) {
+  animation-delay: 5s;
+}
+.lotus-ripple:nth-child(3) {
+  animation-delay: 8s;
+}
+
+@keyframes lotus-ripple {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lotus-glow {
+    animation: none;
+    transform: none;
+    opacity: 0.8;
+  }
+}
+
+/* ---- On water (Home) ---- */
+.lotus--water {
+  --water-a: rgba(206, 222, 216, 0.95);
+  --water-b: rgba(222, 232, 228, 0.7);
+  aspect-ratio: 200 / 150;
+}
+
+@media (prefers-color-scheme: dark) {
+  .lotus--water {
+    --water-a: rgba(58, 64, 110, 0.9);
+    --water-b: rgba(44, 48, 88, 0.6);
+  }
+}
+
+.lotus-water-a {
+  stop-color: var(--water-a);
+}
+.lotus-water-b {
+  stop-color: var(--water-b);
+}
+
+/* The glow sits around the flower, above the water. */
+.lotus--water .lotus-glow {
+  inset: -14% 6% 30% 6%;
+}
+
+.lotus-reflection {
+  opacity: 0.8;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* The glowing petals are bright; keep their reflection a whisper. */
+  .lotus-reflection {
+    opacity: 0.4;
+  }
+}
+
+/* A slow ring on the water every now and then. */
+.lotus-ripple--calm {
+  animation-duration: 12s;
+}
+.lotus-ripple--calm:nth-of-type(2) {
+  animation-delay: 3s;
+}
+.lotus-ripple--calm:nth-of-type(3) {
+  animation-delay: 9s;
+}
+
+/* Rising out of the water as the app opens (once). */
+.lotus-riser {
+  animation: lotus-rise 2.6s ease-out 0.2s backwards;
+}
+
+.lotus--rise .lotus-water-layer {
+  animation: fade-in 2s ease-out backwards;
+}
+
+@keyframes lotus-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

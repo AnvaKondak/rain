@@ -1,0 +1,50 @@
+.detail-feelings {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.detail-feelings li {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--blush);
+  font-size: 0.9rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .detail-feelings li {
+    color: var(--bg);
+  }
+}
+
+.detail-step {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-step h2 {
+  font-size: 1.35rem;
+  margin-bottom: 6px;
+}
+
+.detail-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.detail-empty {
+  color: var(--text-soft);
+  font-style: italic;
+}
+
+.detail-delete {
+  align-self: center;
+  margin-top: 32px;
+}
+
+.page > h1.detail-title {
+  font-size: 1.6rem;
+}
