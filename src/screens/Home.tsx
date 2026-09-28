@@ -69,7 +69,8 @@ export default function Home() {
     <main className="home">
       <div className="home-stars" aria-hidden="true" />
       <div className="home-center">
-        <Lotus stage={0} onWater rise={rise} />
+        <Lotus stage="bloom" onWater rise={rise} />
+        <p className="home-tagline">This meditation follows RAIN, a practice popularized by Tara Brach: Recognize, Allow, Investigate, Nurture.</p>
         <button
           type="button"
           className="btn-begin"
@@ -77,10 +78,10 @@ export default function Home() {
             startDraft()
             // Started inside the tap: iOS only allows audio to begin from a user gesture.
             if (settings.ambientEnabled) startAmbient(settings.ambientSound, settings.ambientVolume)
-            navigate('/practice/recognize')
+            navigate('/practice/arrive')
           }}
         >
-          Begin RAIN
+          Begin RAIN meditation
         </button>
       </div>
       <nav className="home-links" aria-label="More">

@@ -60,6 +60,14 @@
   }
 }
 
+.home-tagline {
+  margin-bottom: -20px;
+  max-width: 28ch;
+  text-align: center;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
 /* Small, calm icon links. */
 .home-links {
   display: flex;

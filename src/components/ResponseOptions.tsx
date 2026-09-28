@@ -30,7 +30,7 @@ export default function ResponseOptions({ step, entry }: ResponseOptionsProps) {
   }
 
   // "Just be" is the resting state. Choosing it folds the textarea away but
-  // never deletes what was written; the Write chip shows a note is kept.
+  // never deletes what was written; the write chip shows a note is kept.
   const justBe = !writing && !hasText
 
   return (
@@ -51,7 +51,7 @@ export default function ResponseOptions({ step, entry }: ResponseOptionsProps) {
           aria-expanded={writing}
           onClick={toggleWriting}
         >
-          ✍️ {hasText && !writing ? 'Your note' : 'Write'}
+          ✍️ {hasText && !writing ? 'Your note' : 'Write a few words'}
         </button>
       </div>
 

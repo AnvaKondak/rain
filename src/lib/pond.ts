@@ -124,9 +124,9 @@ export function formatMonth(key: string): string {
   return monthFormat.format(new Date(y, m - 1, 1))
 }
 
-/** Screen reader label, e.g. "Practice on Sun, Sep 27, afternoon, anxious." */
+/** Screen reader label, e.g. "Meditation on Sun, Sep 27, afternoon, anxious." */
 export function lotusLabel({ session, tint }: Pick<PlacedLotus, 'session' | 'tint'>): string {
-  const parts = [`Practice on ${formatDay(session.startedAt)}`, tint, ...session.feelings]
+  const parts = [`Meditation on ${formatDay(session.startedAt)}`, tint, ...session.feelings]
   if (!session.completedAt) parts.push('ended early')
   return `${parts.join(', ')}.`
 }

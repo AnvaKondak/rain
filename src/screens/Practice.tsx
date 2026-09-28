@@ -9,7 +9,7 @@ import RestMoment from '../components/RestMoment.tsx'
 import ResponseOptions from '../components/ResponseOptions.tsx'
 import StepDots from '../components/StepDots.tsx'
 import StepMore from '../components/StepMore.tsx'
-import { STEPS } from '../content/steps.ts'
+import { ARRIVE, STEPS } from '../content/steps.ts'
 import { saveSession } from '../db/sessions.ts'
 import type { Session } from '../db/types.ts'
 import { clearDraft, useDraft } from '../session/draft.ts'
@@ -17,7 +17,7 @@ import './Practice.css'
 
 const LEAVE_FADE_MS = 1600
 
-// One screen for the whole flow (/practice/recognize … /practice/bloom),
+// One screen for the whole flow (/practice/arrive … /practice/bloom),
 // so the lotus stays mounted and opens smoothly from step to step.
 export default function Practice() {
   const { step } = useParams()
@@ -43,21 +43,24 @@ export default function Practice() {
   }, [step])
 
   const isBloom = step === 'bloom'
+  const isArrive = step === 'arrive'
   const index = STEPS.findIndex((s) => s.id === step)
-  const rain = isBloom || index === -1 ? 0 : STEPS[index].rain
+  // What's on screen: settling in first, then the four steps.
+  const current = isArrive ? ARRIVE : STEPS[index]
+  const rain = isBloom || !current ? 0 : current.rain
 
   // The rain softens step by step; the last few drops arrive at Nurture.
   useEffect(() => {
-    if (isBloom || index === -1) return
-    setAmbientIntensity(STEPS[index].rain)
-    setAmbientDrips(STEPS[index].id === 'nurture')
-  }, [index, isBloom])
+    if (!current) return
+    setAmbientIntensity(current.rain)
+    setAmbientDrips(current === STEPS[STEPS.length - 1])
+  }, [current])
   // No session in progress (e.g. a reload or a direct link): start from home.
-  if (!draft || (!isBloom && index === -1)) return <Navigate to="/" replace />
+  if (!draft || (!isBloom && !current)) return <Navigate to="/" replace />
 
-  const stage = (isBloom ? 'bloom' : index + 1) as LotusStage
-  const current = STEPS[index]
+  const stage: LotusStage = isBloom ? 'bloom' : isArrive ? 0 : ((index + 1) as LotusStage)
   const isLast = index === STEPS.length - 1
+  const next = isArrive ? STEPS[0] : STEPS[index + 1]
 
   const save = async (session: Session) => {
     setSaving(true)
@@ -77,13 +80,13 @@ export default function Practice() {
 
   // The session is saved as it arrives at Bloom.
   const goNext = async () => {
-    if (!isLast) return navigate(`/practice/${STEPS[index + 1].id}`)
+    if (!isLast) return navigate(`/practice/${next.id}`)
     if (saving) return
     await saveCompleted()
     stopAmbient(4) // after the rain: fade to silence
     navigate('/practice/bloom')
   }
-  const goBack = () => navigate(`/practice/${STEPS[index - 1].id}`)
+  const goBack = () => navigate(`/practice/${index > 0 ? STEPS[index - 1].id : 'arrive'}`)
   const exit = (to: string, state?: object) => {
     exiting.current = true
     stopAmbient()
@@ -104,7 +107,7 @@ export default function Practice() {
   return (
     <main className={`practice${isBloom ? ' practice--bloom' : ''}${leaving ? ' is-leaving' : ''}`}>
       <div className="practice-top">
-        {!isBloom && <StepDots current={index} total={STEPS.length} />}
+        {!isBloom && !isArrive && <StepDots current={index} total={STEPS.length} />}
       </div>
 
       <div className="practice-lotus">
@@ -115,20 +118,26 @@ export default function Practice() {
       {isBloom ? (
         <RestMoment saveFailed={saveFailed} saving={saving} onRetrySave={saveCompleted} onDone={toPond} onLearn={toLearn} />
       ) : (
-        <div className="practice-body" key={current.id}>
-          <h1 className="step-name">{current.name}</h1>
-          <p className="step-guidance">{current.guidance}</p>
-          <StepMore step={current} />
+        <div className="practice-body" key={current.name}>
+          <h1 className={isArrive ? 'sr-only' : 'step-name'}>{current.name}</h1>
+          <ul className="step-prompts">
+            {current.prompts.map((prompt) => (
+              <li key={prompt}>{prompt}</li>
+            ))}
+          </ul>
+          {!isArrive && <StepMore step={STEPS[index]} />}
 
-          {current.id === 'recognize' && <FeelingChips selected={draft.feelings} />}
-          <ResponseOptions step={current.id} entry={draft.steps[current.id]} />
+          {step === 'recognize' && <FeelingChips selected={draft.feelings} />}
+          {!isArrive && <ResponseOptions step={STEPS[index].id} entry={draft.steps[STEPS[index].id]} />}
 
           <div className="practice-actions">
+            <p className="step-pause">Stay here as long as you like.</p>
             <button type="button" className="btn btn-primary" onClick={goNext}>
-              {isLast ? 'Finish' : 'Next'}
+              {isArrive ? 'I’m ready to begin' : isLast ? 'Complete meditation' : 'I’m ready to move on'}
             </button>
+            {next && <p className="step-next">Next: {next.name}</p>}
             <div className="practice-secondary">
-              {index > 0 ? (
+              {!isArrive ? (
                 <button type="button" className="btn btn-quiet" onClick={goBack}>
                   ‹ Back
                 </button>
@@ -138,7 +147,8 @@ export default function Practice() {
               <button
                 type="button"
                 className="btn btn-quiet"
-                onClick={() => setConfirmingEnd(true)}
+                // Nothing to save yet while settling in, so just leave.
+                onClick={() => (isArrive ? leave() : setConfirmingEnd(true))}
                 aria-label="End session early"
               >
                 ✕ End

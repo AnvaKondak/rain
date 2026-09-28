@@ -6,6 +6,17 @@
   align-items: center;
 }
 
+.rest-closing {
+  max-width: 34ch;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+  line-height: 1.6;
+  color: var(--text-soft);
+  animation: fade-in 1.5s ease-in-out 200ms both;
+}
+
 .rest-actions {
   margin-top: auto;
   display: flex;
@@ -14,11 +25,11 @@
 }
 
 .rest-done {
-  min-width: 120px;
-  font-size: 1rem;
+  min-height: 56px;
+  padding: 14px 32px;
 }
 
-/* Smaller and softer than Done, so the stillness stays intact. */
+/* Smaller and softer than the pond button, so the stillness stays intact. */
 .rest-learn {
   display: inline-flex;
   align-items: center;

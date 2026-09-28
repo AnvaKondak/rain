@@ -63,7 +63,7 @@ export default function Pond() {
     }
   }
 
-  const emptyMessage = sessions.length === 0 ? 'Your first practice will bloom here.' : 'Still water this month.'
+  const emptyMessage = sessions.length === 0 ? 'Your first meditation will bloom here.' : 'Still water this month.'
 
   return (
     <main className="page">
@@ -82,7 +82,7 @@ export default function Pond() {
       </header>
 
       <h1 className="pond-week">
-        This week: {thisWeek} {thisWeek === 1 ? 'practice' : 'practices'}.
+        This week: {thisWeek} {thisWeek === 1 ? 'meditation' : 'meditations'}.
       </h1>
 
       <nav className="pond-months" aria-label="Month">

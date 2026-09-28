@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react'
 import './RestMoment.css'
 
-// How long the stillness lasts before Done appears.
+const CLOSING = [
+  'Take a moment to notice how you feel now. It might have shifted, or it might not have. Either is okay.',
+  'Notice that you were able to meet this with care. That part of you is always there.',
+]
+
+// How long the stillness lasts before the way to the pond appears.
 const DONE_AFTER_MS = 400
 
 interface RestMomentProps {
@@ -13,7 +18,8 @@ interface RestMomentProps {
 }
 
 /**
- * After the rain: just the bloomed lotus on still water, then a quiet Done.
+ * After the rain: the bloomed lotus on still water, a few closing words, then a
+ * way to the pond.
  * No auto-exit. Mounted only on this screen, so the timing starts fresh.
  */
 export default function RestMoment({ saveFailed, saving, onRetrySave, onDone, onLearn }: RestMomentProps) {
@@ -35,9 +41,15 @@ export default function RestMoment({ saveFailed, saving, onRetrySave, onDone, on
         </p>
       )}
 
+      <div className="rest-closing">
+        {CLOSING.map((line) => (
+          <p key={line}>{line}</p>
+        ))}
+      </div>
+
       <div className={`rest-actions${showDone ? ' is-shown' : ''}`}>
-        <button type="button" className="btn btn-quiet rest-done" onClick={onDone}>
-          Done
+        <button type="button" className="btn btn-primary rest-done" onClick={onDone}>
+          See your lotus in the pond
         </button>
         <a
           className="rest-learn"

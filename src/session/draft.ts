@@ -3,7 +3,7 @@ import type { StepId } from '../content/steps.ts'
 import type { Session, StepEntry } from '../db/types.ts'
 import { uuid } from '../lib/uuid.ts'
 
-// The session in progress lives only in memory until Finish (or "Save what
+// The session in progress lives only in memory until it's completed (or "Save what
 // you have"), so nothing is written while someone is mid-practice.
 
 let draft: Session | null = null
