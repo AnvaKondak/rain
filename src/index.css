@@ -12,6 +12,8 @@
   --focus: #8fa88a;
 
   --serif: 'Fraunces Variable', 'Iowan Old Style', Palatino, Georgia, serif;
+  /* Guidance you read while meditating: a soft, open serif. */
+  --calm: 'Lora Variable', 'Iowan Old Style', Georgia, serif;
   --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
   --fade: 500ms;

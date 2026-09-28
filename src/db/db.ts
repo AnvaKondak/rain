@@ -6,7 +6,7 @@ import type { Feeling, Session, Settings } from './types.ts'
 export const DEFAULT_SETTINGS: Settings = {
   id: 'settings',
   ambientEnabled: true,
-  ambientSound: 'rain',
+  ambientSound: 'wind',
   ambientVolume: 0.5,
 }
 

@@ -112,7 +112,7 @@ export default function Practice() {
 
       <div className="practice-lotus">
         <RainStreaks intensity={rain} />
-        <Lotus stage={stage} />
+        <Lotus stage={stage} onWater />
       </div>
 
       {isBloom ? (

@@ -119,7 +119,7 @@ function readFeeling(v: unknown, index: number): Feeling {
 
 function readSettings(v: unknown): Settings {
   if (!isObject(v)) return DEFAULT_SETTINGS
-  const sound = v.ambientSound === 'bowl' || v.ambientSound === 'wind' ? v.ambientSound : 'rain'
+  const sound = v.ambientSound === 'bowl' || v.ambientSound === 'rain' ? v.ambientSound : 'wind'
   const volume = typeof v.ambientVolume === 'number' ? Math.min(1, Math.max(0, v.ambientVolume)) : 0.5
   return {
     id: 'settings',

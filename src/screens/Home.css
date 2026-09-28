@@ -16,7 +16,8 @@
 }
 
 .home .lotus {
-  width: min(82vw, 320px);
+  /* Wider than the flower alone, to make room for the pond around it. */
+  width: min(100%, 420px);
 }
 
 /* Begin: a soft cream pill whose glow breathes with the lotus (4s in, 6s out). */
@@ -61,7 +62,7 @@
 }
 
 .home-tagline {
-  margin-bottom: -20px;
+  margin-bottom: -4px;
   max-width: 28ch;
   text-align: center;
   color: var(--text-soft);
@@ -70,6 +71,7 @@
 
 /* Small, calm icon links. */
 .home-links {
+  padding-top: 36px;
   display: flex;
   justify-content: center;
   gap: 18px;

@@ -155,6 +155,24 @@
   stop-color: var(--petal-l4-tip);
 }
 
+/* Floating on water: the flower bobs gently up and down, rocking a little
+   from its base as it rises and sinks. */
+.lotus-float {
+  transform-box: view-box;
+  transform-origin: 100px 150px;
+  animation: lotus-float 6s ease-in-out infinite;
+}
+
+@keyframes lotus-float {
+  0%,
+  100% {
+    transform: translateY(2px) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(1deg);
+  }
+}
+
 /* Bloom: slight scale-up and a brighter, slower glow. */
 .lotus--bloom .lotus-flower {
   transform: scale(1.08);
@@ -166,10 +184,9 @@
   transition-duration: 2s;
 }
 
-/* Resting: a very slow breath. */
+/* Resting: a wider glow, breathing at the same pace as every other stage. */
 .lotus--bloom .lotus-glow {
   inset: -18% -6%;
-  animation-duration: 14s;
 }
 
 /* Slow rings spreading on still water, starting once the bloom settles. */
@@ -217,15 +234,83 @@
 
 /* ---- On water (Home) ---- */
 .lotus--water {
-  --water-a: rgba(206, 222, 216, 0.95);
-  --water-b: rgba(222, 232, 228, 0.7);
-  aspect-ratio: 200 / 150;
+  /* Still water catching a pastel sky: soft blue in the middle, blush at the edges. */
+  --water-a: rgba(176, 206, 224, 0.95);
+  --water-b: rgba(228, 194, 214, 0.7);
+  --leaf-a: #b9d3a6;
+  --leaf-b: #7fa877;
+  --leaf-edge: rgba(70, 110, 70, 0.35);
+  --leaf-vein: rgba(240, 250, 230, 0.55);
+  --stem: #8db07f;
+  --pad-small: rgba(150, 180, 120, 0.75);
+  --shimmer: rgba(255, 255, 255, 0.75);
+  aspect-ratio: 260 / 172;
 }
 
 @media (prefers-color-scheme: dark) {
   .lotus--water {
     --water-a: rgba(58, 64, 110, 0.9);
-    --water-b: rgba(44, 48, 88, 0.6);
+    --water-b: rgba(70, 52, 96, 0.55);
+    --leaf-a: #5f8166;
+    --leaf-b: #3d5a48;
+    --leaf-edge: rgba(200, 230, 200, 0.2);
+    --leaf-vein: rgba(200, 230, 200, 0.25);
+    --stem: #587a60;
+    --pad-small: rgba(110, 140, 110, 0.6);
+    --shimmer: rgba(210, 215, 255, 0.35);
+  }
+}
+
+.lotus-leaf-a {
+  stop-color: var(--leaf-a);
+}
+.lotus-leaf-b {
+  stop-color: var(--leaf-b);
+}
+
+.lotus-leaf-shape {
+  stroke: var(--leaf-edge);
+  stroke-width: 0.5;
+}
+
+.lotus-leaf-veins {
+  fill: none;
+  stroke: var(--leaf-vein);
+  stroke-width: 0.4;
+}
+
+.lotus-stem {
+  fill: none;
+  stroke: var(--stem);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.lotus-pad-small {
+  fill: var(--pad-small);
+}
+
+.lotus-shimmer ellipse {
+  fill: var(--shimmer);
+}
+
+/* The buds sway a little on their stems. */
+.lotus-bud-sway {
+  transform-box: view-box;
+  animation: lotus-sway 7s ease-in-out infinite;
+}
+.lotus-bud-sway:nth-of-type(2) {
+  animation-duration: 9s;
+  animation-delay: -3s;
+}
+
+@keyframes lotus-sway {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
   }
 }
 
@@ -268,7 +353,8 @@
   animation: lotus-rise 2.6s ease-out 0.2s backwards;
 }
 
-.lotus--rise .lotus-water-layer {
+.lotus--rise .lotus-water-layer,
+.lotus--rise > .lotus-svg > .lotus-pond {
   animation: fade-in 2s ease-out backwards;
 }
 

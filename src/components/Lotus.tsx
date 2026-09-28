@@ -19,7 +19,94 @@ interface LotusProps {
 const BASE = { x: 100, y: 150 }
 const CLOSED_ANGLE = 5
 // Still water around the base, used on Home.
-const WATER = { cy: 160, rx: 98, ry: 30 }
+const WATER = { cy: 166, rx: 128, ry: 38 }
+
+/** A round lotus leaf seen at an angle, with the notch real ones have. */
+function leafPath(rx: number, ry: number) {
+  return `M0 0L${rx * 0.995} ${-ry * 0.09}A${rx} ${ry} 0 1 1 ${rx * 0.9} ${-ry * 0.42}Z`
+}
+
+/** Faint veins running out from the leaf's centre. */
+function leafVeins(rx: number, ry: number) {
+  return [200, 235, 270, 305, 340, 160, 125, 90, 55]
+    .map((deg) => {
+      const a = (deg * Math.PI) / 180
+      return `M0 0L${(rx * 0.86 * Math.cos(a)).toFixed(1)} ${(ry * 0.86 * Math.sin(a)).toFixed(1)}`
+    })
+    .join('')
+}
+
+// The pond around the Home lotus: big leaves, buds on stems, small pads.
+const LEAVES = [
+  { x: 176, y: 158, rx: 30, ry: 8, flip: true },
+  { x: 36, y: 180, rx: 40, ry: 12, flip: false },
+  { x: 150, y: 190, rx: 22, ry: 6, flip: false },
+]
+const RAISED_LEAF = { x: 22, y: 118, rx: 26, ry: 10, tilt: -22, stemFrom: 160 }
+const BUDS = [
+  { x: 186, top: 104, from: 162, size: 1 },
+  { x: -8, top: 128, from: 168, size: 0.8 },
+]
+const PADS = [
+  [60, 150, 7, 2],
+  [140, 146, 5, 1.5],
+  [212, 172, 8, 2.2],
+  [-14, 158, 6, 1.8],
+  [92, 196, 6, 1.6],
+  [118, 176, 4, 1.2],
+  [4, 196, 5, 1.4],
+  [224, 190, 5, 1.4],
+] as const
+
+function Leaf({ rx, ry, fill }: { rx: number; ry: number; fill: string }) {
+  return (
+    <g className="lotus-leaf">
+      <path d={leafPath(rx, ry)} fill={fill} className="lotus-leaf-shape" />
+      <path d={leafVeins(rx, ry)} className="lotus-leaf-veins" />
+    </g>
+  )
+}
+
+function PondBack({ uid }: { uid: string }) {
+  const fill = `url(#${uid}-leaf)`
+  return (
+    <g className="lotus-pond" aria-hidden="true">
+      {PADS.map(([x, y, rx, ry]) => (
+        <ellipse key={`${x}-${y}`} className="lotus-pad-small" cx={x} cy={y} rx={rx} ry={ry} />
+      ))}
+      <path className="lotus-stem" d={`M${RAISED_LEAF.x + 2} ${RAISED_LEAF.stemFrom}Q${RAISED_LEAF.x - 4} 140 ${RAISED_LEAF.x} ${RAISED_LEAF.y}`} />
+      <g transform={`translate(${RAISED_LEAF.x} ${RAISED_LEAF.y}) rotate(${RAISED_LEAF.tilt})`}>
+        <Leaf rx={RAISED_LEAF.rx} ry={RAISED_LEAF.ry} fill={fill} />
+      </g>
+      {BUDS.map((bud) => (
+        <g key={bud.x} className="lotus-bud-sway" style={{ transformOrigin: `${bud.x}px ${bud.from}px` }}>
+          <path className="lotus-stem" d={`M${bud.x} ${bud.from}Q${bud.x + 3} ${(bud.from + bud.top) / 2} ${bud.x} ${bud.top}`} />
+          <path
+            className="lotus-petal-shape"
+            transform={`translate(${bud.x} ${bud.top + 1})`}
+            d={petalPath(20 * bud.size, 15 * bud.size)}
+            fill={`url(#${uid}-bud)`}
+          />
+        </g>
+      ))}
+      <g transform={`translate(${LEAVES[0].x} ${LEAVES[0].y}) scale(-1 1)`}>
+        <Leaf rx={LEAVES[0].rx} ry={LEAVES[0].ry} fill={fill} />
+      </g>
+    </g>
+  )
+}
+
+function PondFront({ uid }: { uid: string }) {
+  return (
+    <g className="lotus-pond" aria-hidden="true">
+      {LEAVES.slice(1).map((leaf) => (
+        <g key={leaf.x} transform={`translate(${leaf.x} ${leaf.y})${leaf.flip ? ' scale(-1 1)' : ''}`}>
+          <Leaf rx={leaf.rx} ry={leaf.ry} fill={`url(#${uid}-leaf)`} />
+        </g>
+      ))}
+    </g>
+  )
+}
 
 const LAYERS = [
   { angle: 28, length: 68, width: 24, tone: 'l1' },
@@ -138,7 +225,7 @@ export default function Lotus({ stage, breathing = true, onWater = false, rise =
       {breathing && <div className="lotus-glow" aria-hidden="true" />}
       <svg
         className="lotus-svg"
-        viewBox={onWater ? "0 52 200 150" : "0 52 200 114"}
+        viewBox={onWater ? "-30 40 260 172" : "0 52 200 114"}
         role="img"
         aria-label={bloom ? 'A lotus in full bloom' : `A lotus, ${openLayers} of 4 layers open`}
       >
@@ -158,6 +245,10 @@ export default function Lotus({ stage, breathing = true, onWater = false, rise =
                 <stop offset="70%" className="lotus-water-b" />
                 <stop offset="100%" className="lotus-water-b" stopOpacity="0" />
               </radialGradient>
+              <radialGradient id={`${uid}-leaf`} cx="45%" cy="40%" r="65%">
+                <stop offset="0%" className="lotus-leaf-a" />
+                <stop offset="100%" className="lotus-leaf-b" />
+              </radialGradient>
               <clipPath id={`${uid}-pool`}>
                 <ellipse cx={BASE.x} cy={WATER.cy} rx={WATER.rx} ry={WATER.ry} />
               </clipPath>
@@ -165,8 +256,8 @@ export default function Lotus({ stage, breathing = true, onWater = false, rise =
                 <stop offset="0%" stopColor="#fff" stopOpacity="0.5" />
                 <stop offset="100%" stopColor="#fff" stopOpacity="0" />
               </linearGradient>
-              <mask id={`${uid}-fade`} maskUnits="userSpaceOnUse" x="0" y={BASE.y} width="200" height="60">
-                <rect x="0" y={BASE.y} width="200" height="60" fill={`url(#${uid}-fade-g)`} />
+              <mask id={`${uid}-fade`} maskUnits="userSpaceOnUse" x="-30" y={BASE.y} width="260" height="60">
+                <rect x="-30" y={BASE.y} width="260" height="60" fill={`url(#${uid}-fade-g)`} />
               </mask>
             </>
           )}
@@ -188,13 +279,23 @@ export default function Lotus({ stage, breathing = true, onWater = false, rise =
             <g clipPath={`url(#${uid}-pool)`} mask={`url(#${uid}-fade)`} className="lotus-reflection">
               <g transform={`matrix(1 0 0 -0.55 0 ${BASE.y * 1.55})`}>{flower}</g>
             </g>
+            {/* Soft light on the water. */}
+            <g className="lotus-shimmer">
+              <ellipse cx={40} cy={170} rx={26} ry={1.2} />
+              <ellipse cx={160} cy={180} rx={34} ry={1.4} />
+              <ellipse cx={110} cy={194} rx={20} ry={1} />
+            </g>
             {[0, 1].map((i) => (
               <ellipse key={i} className="lotus-ripple lotus-ripple--calm" cx={BASE.x} cy={BASE.y + 2} rx="44" ry="5" />
             ))}
+            <PondBack uid={uid} />
           </g>
         )}
 
-        <g className={rise ? 'lotus-riser' : undefined}>{flower}</g>
+        <g className={rise ? 'lotus-riser' : undefined}>
+          <g className="lotus-float">{flower}</g>
+        </g>
+        {onWater && <PondFront uid={uid} />}
       </svg>
     </div>
   )
