@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router'
-import { setAmbientDrips, setAmbientIntensity, stopAmbient } from '../audio/ambient.ts'
+import { setAmbientBirds, setAmbientIntensity, stopAmbient } from '../audio/ambient.ts'
 import ConfirmDialog from '../components/ConfirmDialog.tsx'
 import FeelingChips from '../components/FeelingChips.tsx'
 import Lotus, { type LotusStage } from '../components/Lotus.tsx'
@@ -49,12 +49,18 @@ export default function Practice() {
   const current = isArrive ? ARRIVE : STEPS[index]
   const rain = isBloom || !current ? 0 : current.rain
 
-  // The rain softens step by step; the last few drops arrive at Nurture.
+  // The rain softens step by step.
   useEffect(() => {
     if (!current) return
     setAmbientIntensity(current.rain)
-    setAmbientDrips(current === STEPS[STEPS.length - 1])
   }, [current])
+
+  // The meditation is over: a few birds start to sing.
+  useEffect(() => {
+    if (!isBloom) return
+    setAmbientBirds(true)
+    return () => setAmbientBirds(false)
+  }, [isBloom])
   // No session in progress (e.g. a reload or a direct link): start from home.
   if (!draft || (!isBloom && !current)) return <Navigate to="/" replace />
 

@@ -8,14 +8,13 @@ import { setAudioSessionType } from './session.ts'
 // Softening rain: each step lowers an "intensity" (1 → 0.25). The main loop's
 // volume is the user's volume × intensity, and for rain a low-pass filter
 // closes too (8000 Hz → 1500 Hz) so the rain sounds farther away, not just
-// quieter. At Nurture a light drips loop fades in for the last few drops.
+// quieter. When the meditation ends, a little birdsong joins in.
 
 const FADE_IN_SEC = 2
 const FADE_OUT_SEC = 3
 const SOFTEN_SEC = 3
-const DRIPS_LEVEL = 0.6 // relative to the user's volume
+const BIRDS_LEVEL = 0.35 // relative to the user's volume
 
-type Loop = AmbientSound | 'drips'
 interface Layer {
   source: AudioBufferSourceNode
   gain: GainNode
@@ -23,13 +22,12 @@ interface Layer {
 }
 
 let ctx: AudioContext | null = null
-const buffers = new Map<Loop, Promise<AudioBuffer>>()
+const buffers = new Map<AmbientSound, Promise<AudioBuffer>>()
 let main: Layer | null = null
-let drips: Layer | null = null
+let birds: { gain: GainNode; timer: number } | null = null
 let sound: AmbientSound | null = null
 let userVolume = 0.5
 let intensity = 1
-let dripsWanted = false
 // Bumped on every start/stop so a slow load can't start a sound that was
 // already stopped or replaced.
 let generation = 0
@@ -37,7 +35,7 @@ let generation = 0
 // The slider is linear; ears are not. Squaring gives a gentler low end.
 const toGain = (volume: number) => Math.min(1, Math.max(0, volume)) ** 2
 const mainGain = () => toGain(userVolume * intensity)
-const dripsGain = () => toGain(userVolume) * DRIPS_LEVEL
+const birdsGain = () => toGain(userVolume) * BIRDS_LEVEL
 
 /** Low-pass cutoff for an intensity: 1 → 8000 Hz, 0.25 → 1500 Hz, even steps to the ear. */
 function cutoff(level: number) {
@@ -59,7 +57,7 @@ function context(): AudioContext {
 // The iPhone app's console can't print error objects, so spell them out.
 const describeError = (err: unknown) => (err instanceof Error ? `${err.name}: ${err.message}` : String(err))
 
-function load(ac: AudioContext, loop: Loop): Promise<AudioBuffer> {
+function load(ac: AudioContext, loop: AmbientSound): Promise<AudioBuffer> {
   let buffer = buffers.get(loop)
   if (!buffer) {
     buffer = fetch(`/sounds/${loop}.mp3`)
@@ -205,9 +203,8 @@ function fadeOutLayer(layer: Layer | null, seconds: number) {
 
 function fadeOutAll(seconds: number) {
   fadeOutLayer(main, seconds)
-  fadeOutLayer(drips, seconds)
   main = null
-  drips = null
+  stopBirds(seconds)
 }
 
 /** Start a sound at full intensity, fading in over ~2s. Call directly from a tap handler. */
@@ -219,7 +216,6 @@ export function startAmbient(next: AmbientSound, volume: number) {
   sound = next
   userVolume = volume
   intensity = 1
-  dripsWanted = false
   load(ac, next)
     .then((buffer) => {
       if (mine !== generation) return
@@ -232,7 +228,6 @@ export function startAmbient(next: AmbientSound, volume: number) {
 export function stopAmbient(fadeSeconds = FADE_OUT_SEC) {
   generation++
   sound = null
-  dripsWanted = false
   fadeOutAll(fadeSeconds)
   stopKeepAlive(fadeSeconds)
 }
@@ -242,7 +237,7 @@ export function setAmbientVolume(volume: number) {
   userVolume = volume
   if (!ctx) return
   if (main) rampTo(main.gain.gain, mainGain(), 0.15, ctx)
-  if (drips) rampTo(drips.gain.gain, dripsGain(), 0.15, ctx)
+  if (birds) rampTo(birds.gain.gain, birdsGain(), 0.15, ctx)
 }
 
 /** Soften (or strengthen) the sound to a step's intensity, 0–1, over ~3s. */
@@ -253,22 +248,106 @@ export function setAmbientIntensity(level: number) {
   if (main.filter) rampTo(main.filter.frequency, cutoff(level), SOFTEN_SEC, ctx)
 }
 
-/** Fade the "last few drops" layer in or out (rain only). */
-export function setAmbientDrips(on: boolean) {
-  dripsWanted = on
-  if (!ctx) return
+// ---- Birdsong ----
+// Made on the fly rather than from a recording: every few seconds one bird
+// sings a short call (a couple of rising tweets, a falling phrase or a quick
+// trill) from somewhere a little left or right, near or far. Never a loop,
+// so it never repeats, and sparse enough to stay in the background.
+
+/** One chirp: a sine sweeping from `from` to `to` Hz, with a light flutter. */
+function chirp(ac: AudioContext, out: AudioNode, at: number, from: number, to: number, dur: number) {
+  const osc = ac.createOscillator()
+  osc.frequency.setValueAtTime(from, at)
+  osc.frequency.exponentialRampToValueAtTime(to, at + dur)
+
+  const flutter = ac.createOscillator()
+  const depth = ac.createGain()
+  flutter.frequency.value = 30 + Math.random() * 30
+  depth.gain.value = from * 0.025
+  flutter.connect(depth).connect(osc.frequency)
+
+  const env = ac.createGain()
+  env.gain.setValueAtTime(0, at)
+  env.gain.linearRampToValueAtTime(1, at + dur * 0.2)
+  env.gain.exponentialRampToValueAtTime(0.001, at + dur)
+  osc.connect(env).connect(out)
+
+  osc.start(at)
+  flutter.start(at)
+  osc.stop(at + dur + 0.02)
+  flutter.stop(at + dur + 0.02)
+  osc.onended = () => {
+    osc.disconnect()
+    flutter.disconnect()
+    depth.disconnect()
+    env.disconnect()
+  }
+}
+
+/** One bird's call, starting a moment from now. */
+function birdCall(ac: AudioContext, out: AudioNode) {
+  const place = ac.createStereoPanner()
+  place.pan.value = Math.random() * 1.2 - 0.6
+  const distance = ac.createGain()
+  distance.gain.value = 0.4 + Math.random() * 0.6
+  place.connect(distance).connect(out)
+
+  const at = ac.currentTime + 0.05
+  const pitch = 0.85 + Math.random() * 0.3 // each bird a little higher or lower
+  const kind = Math.random()
+  let end = at
+  if (kind < 0.4) {
+    // Two to four rising tweets.
+    const n = 2 + Math.floor(Math.random() * 3)
+    for (let i = 0; i < n; i++) chirp(ac, place, (end = at + i * 0.2), 3000 * pitch, 4300 * pitch, 0.09)
+  } else if (kind < 0.8) {
+    // A short phrase falling down the scale.
+    const n = 4 + Math.floor(Math.random() * 3)
+    for (let i = 0; i < n; i++) {
+      const f = 4800 * pitch * 0.93 ** i
+      chirp(ac, place, (end = at + i * 0.13), f, f * 0.8, 0.08)
+    }
+  } else {
+    // A quick trill.
+    for (let i = 0; i < 8; i++) chirp(ac, place, (end = at + i * 0.06), 3800 * pitch, 4200 * pitch, 0.04)
+  }
+  window.setTimeout(() => {
+    place.disconnect()
+    distance.disconnect()
+  }, (end - ac.currentTime + 0.5) * 1000)
+}
+
+function stopBirds(seconds: number) {
+  if (!birds || !ctx) return
+  const { gain, timer } = birds
+  window.clearTimeout(timer)
+  rampTo(gain.gain, 0, seconds, ctx)
+  window.setTimeout(() => gain.disconnect(), seconds * 1000 + 200)
+  birds = null
+}
+
+/** Let a little birdsong in (or fade it away) over whatever is playing. */
+export function setAmbientBirds(on: boolean) {
   if (!on) {
-    fadeOutLayer(drips, SOFTEN_SEC)
-    drips = null
+    stopBirds(SOFTEN_SEC)
     return
   }
-  if (drips || sound !== 'rain') return
+  // Only alongside the ambient sound, so "sound off" stays quiet.
+  if (birds || !ctx || sound === null) return
   const ac = ctx
-  const mine = generation
-  load(ac, 'drips')
-    .then((buffer) => {
-      if (mine !== generation || !dripsWanted || drips) return
-      drips = startLayer(ac, buffer, dripsGain(), SOFTEN_SEC)
-    })
-    .catch((err) => console.warn('Drips sound unavailable:', describeError(err)))
+  const gain = ac.createGain()
+  gain.gain.setValueAtTime(0, ac.currentTime)
+  gain.gain.linearRampToValueAtTime(birdsGain(), ac.currentTime + SOFTEN_SEC)
+  gain.connect(ac.destination)
+
+  const flock = { gain, timer: 0 }
+  const sing = (delay: number) => {
+    flock.timer = window.setTimeout(() => {
+      if (birds !== flock) return
+      birdCall(ac, gain)
+      sing(3000 + Math.random() * 5000) // the next call in 3–8s
+    }, delay)
+  }
+  birds = flock
+  sing(1500)
 }

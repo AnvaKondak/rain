@@ -18,7 +18,7 @@ npm run lint
 
 ## Ambient sounds
 
-`public/sounds/rain.mp3`, `bowl.mp3`, `wind.mp3` and `drips.mp3` (the last few
-drops at Nurture) are original loops generated for this app, so there's nothing
-to license or credit. To change one, replace the file under the same name; the
+`public/sounds/rain.mp3`, `bowl.mp3` and `wind.mp3` are original loops
+generated for this app, so there's nothing to license or credit. The birdsong
+at the end of a meditation is synthesized live in `src/audio/ambient.ts`. To change one, replace the file under the same name; the
 player loops it seamlessly and trims MP3 encoder padding automatically.
