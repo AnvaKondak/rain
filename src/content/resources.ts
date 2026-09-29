@@ -138,6 +138,12 @@ export const RESOURCE_SECTIONS: ResourceSection[] = [
         url: openLibrary('Mindfulness in Plain English', 'Gunaratana'),
       },
       {
+        title: 'A Plea for the Animals',
+        author: 'Matthieu Ricard',
+        note: 'The moral, philosophical, and evolutionary imperative to treat all beings with compassion.',
+        url: openLibrary('A Plea for the Animals', 'Matthieu Ricard'),
+      },
+      {
         title: 'Tara’s full reading list',
         note: 'Every book she recommends, grouped by tradition and theme.',
         url: 'https://www.tarabrach.com/reading/',
